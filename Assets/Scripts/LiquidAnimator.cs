@@ -11,27 +11,36 @@ public class LiquidAnimator : MonoBehaviour
     private static readonly int WaveScale = Shader.PropertyToID("_WaveScale");
     private static readonly int WaveSpeed = Shader.PropertyToID("_WaveSpeed");
     public float fillAmount = 0.5f;
+    public Vector2 yBounds = new Vector2(-1f, 1f);
+        
     Renderer rend;
     MaterialPropertyBlock block;
     Vector3 lastPos, velocity, smoothVelocity;
     Vector3 wobble, wobbleTarget;
-    public float wobbleDecay = 2f;
-    public float wobbleIntensity = 0.25f;
+    
     public float waveBaseHeight = 0.02f;
+    public float waveIntensity = 0.2f;
+    public float waveScale = 1.0f;
 
+    
+    public float wobbleSpeed = 2f;
+    public float wobbleDamping = 3f;
+    public float wobbleStrength = 0.02f;
+
+    private Vector2 wobbleOffset;
+    private Vector2 wobbleVelocity;
+
+    
     void OnEnable()
     {
         rend = GetComponent<Renderer>();
         block = new MaterialPropertyBlock();
         lastPos = transform.position;
         
-        Bounds b = rend.bounds;
-        float minY = rend.bounds.min.y - transform.position.y;
-        float maxY = rend.bounds.max.y - transform.position.y;
-        rend.GetPropertyBlock(block);
-        block.SetVector(FillAmountRemap, new Vector2(minY, maxY));
-        rend.SetPropertyBlock(block);
-        
+        // float minY = yBounds.x - transform.position.y;
+        // float maxY = yBounds.y - transform.position.y;
+        // rend.GetPropertyBlock(block);
+        // rend.SetPropertyBlock(block);
     }
 
     void Update()
@@ -39,19 +48,23 @@ public class LiquidAnimator : MonoBehaviour
         rend.GetPropertyBlock(block);
         
         block.SetFloat(FillAmount, fillAmount);
+        block.SetVector(FillAmountRemap, new Vector2(yBounds.x, yBounds.y));
 
         Vector3 pos = transform.position;
         velocity = (pos - lastPos) / Mathf.Max(Time.deltaTime, 1e-5f);
         lastPos = pos;
 
-        smoothVelocity = Vector3.Lerp(smoothVelocity, velocity, Time.deltaTime * 5f);
-        wobbleTarget = new Vector3(smoothVelocity.x, -smoothVelocity.z, 0) * wobbleIntensity;
-        wobble = Vector3.Lerp(wobble, wobbleTarget, Time.deltaTime * wobbleDecay);
-        block.SetVector(Wobble, new Vector2(wobble.x, wobble.y));
-
-        float waveHeight = waveBaseHeight + wobble.magnitude * 0.05f;
+        Vector2 move = new Vector2(velocity.x, -velocity.z);
+        wobbleVelocity += move * wobbleStrength;
+        wobbleVelocity += -wobbleOffset * (wobbleSpeed * wobbleSpeed * Time.deltaTime);
+        wobbleVelocity *= Mathf.Exp(-wobbleDamping * Time.deltaTime);
+        wobbleOffset += wobbleVelocity * Time.deltaTime;
+        block.SetVector(Wobble, wobbleOffset);
+        
+        float waveHeight = waveBaseHeight + wobbleVelocity.magnitude * waveIntensity;
+        
         block.SetFloat(WaveHeight, waveHeight);
-        block.SetFloat(WaveScale, 1.0f);
+        block.SetFloat(WaveScale, waveScale);
         block.SetFloat(WaveSpeed, 1.0f);
 
         rend.SetPropertyBlock(block);

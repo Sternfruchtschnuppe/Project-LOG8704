@@ -33,10 +33,10 @@ public class MouseInteract : MonoBehaviour
             var targetPos = ray.GetPoint(dist);
             grabbed.position = Vector3.Lerp(grabbed.position, targetPos, 20 * Time.deltaTime);
 
-            if (Input.GetKey(KeyCode.Q)) tilt -= 100 * Time.deltaTime;
-            if (Input.GetKey(KeyCode.E)) tilt += 100 * Time.deltaTime;
-
-            grabbed.rotation = Quaternion.LookRotation(cam.transform.forward) * Quaternion.AngleAxis(tilt, Vector3.forward);
+            if (Input.GetKey(KeyCode.Q)) tilt = 200 * Time.deltaTime;
+            else if (Input.GetKey(KeyCode.E)) tilt = -200 * Time.deltaTime;
+            else tilt = 0;
+            grabbed.rotation *= Quaternion.AngleAxis(tilt, (grabbed.position - cam.transform.position).normalized);
         }
     }
 }
