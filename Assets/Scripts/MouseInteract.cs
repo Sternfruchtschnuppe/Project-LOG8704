@@ -22,10 +22,22 @@ public class MouseInteract : MonoBehaviour
                 grabbed = hit.transform;
                 dist = hit.distance;
                 tilt = 0;
+                
+                if (grabbed.TryGetComponent<Rigidbody>(out var rb))
+                {
+                    rb.useGravity = false;
+                }
             }
         }
 
-        if (Input.GetMouseButtonUp(0)) grabbed = null;
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (grabbed.TryGetComponent<Rigidbody>(out var rb))
+            {
+                rb.useGravity = true;
+            }
+            grabbed = null;
+        }
 
         if (grabbed)
         {
@@ -36,7 +48,7 @@ public class MouseInteract : MonoBehaviour
             if (Input.GetKey(KeyCode.Q)) tilt = 200 * Time.deltaTime;
             else if (Input.GetKey(KeyCode.E)) tilt = -200 * Time.deltaTime;
             else tilt = 0;
-            grabbed.rotation *= Quaternion.AngleAxis(tilt, (grabbed.position - cam.transform.position).normalized);
+            grabbed.rotation *= Quaternion.AngleAxis(tilt, Vector3.forward);
         }
     }
 }

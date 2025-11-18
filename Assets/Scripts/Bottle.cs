@@ -4,6 +4,7 @@ using UnityEngine.Playables;
 
 public class Bottle : MonoBehaviour
 {
+    public ChemicalSubstance chemicalSubstance;
     public AnimationCurve outflowThresholdCurve;
     public float fill = 1f;
     public float drainSpeed = 1f;
@@ -27,7 +28,6 @@ public class Bottle : MonoBehaviour
         tilt = Mathf.Clamp01(Mathf.Acos(tilt) / Mathf.PI);
         
         var threshold = outflowThresholdCurve.Evaluate(tilt);
-        Debug.Log($"{tilt}_{threshold}_{outflowThresholdCurve.Evaluate(1.0f)}");
         if (fill > threshold)
         {
             _emissionModule.enabled = true;
