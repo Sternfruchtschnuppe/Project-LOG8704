@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class Bottle : MonoBehaviour
+public class Bottle : ParticleCollisionListener
 {
-    public ChemicalSubstance chemicalSubstance;
+    public List<ChemicalSubstance> chemicalSubstances = new List<ChemicalSubstance>();
     public AnimationCurve outflowThresholdCurve;
     public float fill = 1f;
     public float drainSpeed = 1f;
@@ -14,14 +17,20 @@ public class Bottle : MonoBehaviour
 
     private ParticleSystem.EmissionModule _emissionModule;
     private LiquidAnimator _liquidAnimator;
-
+    public Collider trigger;
+    
     private float _lastFillEmission = 1f;
-    private void Start()
+    
+    
+    
+    public override void Start()
     {
+        base.Start();
         _liquidAnimator = GetComponentInChildren<LiquidAnimator>();
         _emissionModule = liquidParticles.emission;
+        trigger = GetComponents<Collider>().First(c => c.isTrigger);
     }
-
+    
     void Update()
     {
         var tilt = Vector3.Dot(transform.up, Vector3.up);
@@ -55,5 +64,12 @@ public class Bottle : MonoBehaviour
         }
 
         if (fill > _lastFillEmission) _lastFillEmission = fill;
+    }
+    
+    public override void OnHitBySubstance(List<ChemicalSubstance> chemicalSubstances)
+    {
+        this.chemicalSubstances.AddRange(chemicalSubstances);
+        this.chemicalSubstances = this.chemicalSubstances.Distinct().ToList();
+        fill = Mathf.Clamp01(fill + 1f / totalParticles);
     }
 }

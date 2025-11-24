@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,19 +12,27 @@ public class ParticleCollisionHandler : MonoBehaviour
     {
         _bottle = GetComponentInParent<Bottle>();
         _particleSystem = GetComponent<ParticleSystem>();
-        var trigger = _particleSystem.trigger;
-        var i = 0;
-        foreach (var col in ParticleCollisionManager.Instance.particleTriggers)
+        StartCoroutine(UpdateParticleTriggers());
+    }
+
+    private IEnumerator UpdateParticleTriggers()
+    {
+        while (true)
         {
-            trigger.SetCollider(i++, col);
+            var trigger = _particleSystem.trigger;
+            var i = 0;
+            foreach (var col in ParticleCollisionManager.Instance.particleTriggers)
+            {
+                if (col == _bottle.trigger) continue;
+                trigger.SetCollider(i++, col);
+            }
+
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
     void OnParticleTrigger()
     {
-        var bottle = _particleSystem.transform.parent.GetComponent<Bottle>();
-        if (!bottle) return;
-
         var entered = new List<ParticleSystem.Particle>();
         _particleSystem.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, entered, out var data);
         
@@ -36,13 +45,12 @@ public class ParticleCollisionHandler : MonoBehaviour
             for (int c = 0; c < colliderCount; c++)
             {
                 var col = data.GetCollider(i, c);
-                if (col && col.TryGetComponent<ParticleCollisionListener>(out var listener))
+                Debug.Log(col.gameObject.name);
+                if (col && col.gameObject.TryGetComponent<ParticleCollisionListener>(out var listener))
                 {
-                    listener.OnHitBySubstance(bottle.chemicalSubstance);
+                    listener.OnHitBySubstance(_bottle.chemicalSubstances);
                 }
             }
         }
-
     }
-
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -75,9 +77,9 @@ public class Fire : ParticleCollisionListener
         }
     }
 
-    public override void OnHitBySubstance(ChemicalSubstance chemicalSubstance)
+    public override void OnHitBySubstance(List<ChemicalSubstance> chemicalSubstances)
     {
-        SetHealth(health + chemicalSubstance.fireFeedFactor);
+        SetHealth(health + chemicalSubstances.Sum(c => c.fireFeedFactor));
     }
 
     public void SetHealth(float health)

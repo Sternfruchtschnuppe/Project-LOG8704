@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ParticleCollisionManager : MonoBehaviour
 {
     public static ParticleCollisionManager Instance;
-    public List<Collider> particleTriggers = new  List<Collider>();
+    public List<Collider> particleTriggers;
     
     private void Awake()
     {
         Instance = this;
+        particleTriggers = new List<Collider>();
     }
 }
 
@@ -17,8 +19,9 @@ public abstract class ParticleCollisionListener : MonoBehaviour
 {
     public virtual void Start()
     {
-        ParticleCollisionManager.Instance.particleTriggers.Add(GetComponent<Collider>());
+        var pcm = ParticleCollisionManager.Instance;
+        pcm.particleTriggers.Add(GetComponents<Collider>().First(c => c.isTrigger));
     }
     
-    public abstract void OnHitBySubstance(ChemicalSubstance chemicalSubstance);
+    public abstract void OnHitBySubstance(List<ChemicalSubstance> chemicalSubstances);
 }
