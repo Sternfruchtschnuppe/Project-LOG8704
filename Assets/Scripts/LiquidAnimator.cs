@@ -10,9 +10,11 @@ public class LiquidAnimator : MonoBehaviour
     private static readonly int WaveHeight = Shader.PropertyToID("_WaveHeight");
     private static readonly int WaveScale = Shader.PropertyToID("_WaveScale");
     private static readonly int WaveSpeed = Shader.PropertyToID("_WaveSpeed");
-    public float fillAmount = 0.5f;
+    private static readonly int TopColor = Shader.PropertyToID("_TopColor");
+    private static readonly int SideColor = Shader.PropertyToID("_SideColor");
+
     public Vector2 yBounds = new Vector2(-1f, 1f);
-        
+    
     Renderer rend;
     MaterialPropertyBlock block;
     Vector3 lastPos, velocity, smoothVelocity;
@@ -30,24 +32,25 @@ public class LiquidAnimator : MonoBehaviour
     private Vector2 wobbleOffset;
     private Vector2 wobbleVelocity;
 
+    private Bottle _bottle;
     
     void OnEnable()
     {
+        _bottle = GetComponentInParent<Bottle>();
         rend = GetComponent<Renderer>();
+        rend.material = new Material(rend.sharedMaterial);
         block = new MaterialPropertyBlock();
         lastPos = transform.position;
         
-        // float minY = yBounds.x - transform.position.y;
-        // float maxY = yBounds.y - transform.position.y;
-        // rend.GetPropertyBlock(block);
-        // rend.SetPropertyBlock(block);
+        _bottle.color = _bottle.GetTargetColor();
     }
 
     void Update()
     {
         rend.GetPropertyBlock(block);
+        if (block == null) return;
         
-        block.SetFloat(FillAmount, fillAmount);
+        block.SetFloat(FillAmount, _bottle.fillAmount);
         block.SetVector(FillAmountRemap, new Vector2(yBounds.x, yBounds.y));
 
         Vector3 pos = transform.position;
@@ -66,7 +69,10 @@ public class LiquidAnimator : MonoBehaviour
         block.SetFloat(WaveHeight, waveHeight);
         block.SetFloat(WaveScale, waveScale);
         block.SetFloat(WaveSpeed, 1.0f);
-
+        
+        block.SetColor(TopColor, _bottle.color + Color.white * 0.2f);
+        block.SetColor(SideColor, _bottle.color);
+        
         rend.SetPropertyBlock(block);
     }
     
@@ -78,5 +84,4 @@ public class LiquidAnimator : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(r.bounds.center, r.bounds.size);
     }
-
 }

@@ -9,11 +9,14 @@ public class ChemicalSubstance : ScriptableObject
         Water,
         Copper2Chloride,    // fire -> green flame
         StrontiumChloride,  // fire -> red flame
-        SodiumChloride      // fire -> bright yellow flame
+        SodiumChloride,     // fire -> bright yellow flame
+        Sodium,             // water + sodium = boom
     }
     
     public Substance substance;
     public string displayName;
+
+    public Color color;
     
     public float fireFeedFactor; //add or remove power of fire source (water has negative value, gas positive)
     public bool canChangeFlameColor;

@@ -31,12 +31,34 @@ public class ParticleCollisionHandler : MonoBehaviour
         }
     }
 
+    // void OnParticleTrigger()
+    // {
+    //     var entered = new List<ParticleSystem.Particle>();
+    //     _particleSystem.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, entered, out var data);
+    //     
+    //     for (int i = 0; i < entered.Count; i++)
+    //     {
+    //         int colliderCount = data.GetColliderCount(i);
+    //         if (colliderCount == 0)
+    //             continue;
+    //
+    //         for (int c = 0; c < colliderCount; c++)
+    //         {
+    //             var col = data.GetCollider(i, c);
+    //             if (col && col.gameObject.TryGetComponent<ParticleCollisionListener>(out var listener))
+    //             {
+    //                 listener.OnHitBySubstance(_bottle.chemicalSubstances);
+    //             }
+    //         }
+    //     }
+    // }
+    
     void OnParticleTrigger()
     {
         var entered = new List<ParticleSystem.Particle>();
-        _particleSystem.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, entered, out var data);
-        
-        for (int i = 0; i < entered.Count; i++)
+        int numEnter = _particleSystem.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, entered, out var data);
+
+        for (int i = 0; i < numEnter; i++)
         {
             int colliderCount = data.GetColliderCount(i);
             if (colliderCount == 0)
@@ -45,7 +67,6 @@ public class ParticleCollisionHandler : MonoBehaviour
             for (int c = 0; c < colliderCount; c++)
             {
                 var col = data.GetCollider(i, c);
-                Debug.Log(col.gameObject.name);
                 if (col && col.gameObject.TryGetComponent<ParticleCollisionListener>(out var listener))
                 {
                     listener.OnHitBySubstance(_bottle.chemicalSubstances);
@@ -53,4 +74,6 @@ public class ParticleCollisionHandler : MonoBehaviour
             }
         }
     }
+
+
 }

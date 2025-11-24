@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -9,7 +10,8 @@ public class Bottle : ParticleCollisionListener
 {
     public List<ChemicalSubstance> chemicalSubstances = new List<ChemicalSubstance>();
     public AnimationCurve outflowThresholdCurve;
-    public float fill = 1f;
+    public float fillAmount = 1f;
+    public Color color;
     public float drainSpeed = 1f;
     
     public ParticleSystem liquidParticles;
@@ -20,8 +22,8 @@ public class Bottle : ParticleCollisionListener
     public Collider trigger;
     
     private float _lastFillEmission = 1f;
-    
-    
+
+    private bool exploding = false;
     
     public override void Start()
     {
@@ -30,26 +32,26 @@ public class Bottle : ParticleCollisionListener
         _emissionModule = liquidParticles.emission;
         trigger = GetComponents<Collider>().First(c => c.isTrigger);
     }
-    
+
     void Update()
     {
         var tilt = Vector3.Dot(transform.up, Vector3.up);
         tilt = Mathf.Clamp01(Mathf.Acos(tilt) / Mathf.PI);
         
         var threshold = outflowThresholdCurve.Evaluate(tilt);
-        if (fill > threshold)
+        if (fillAmount > threshold)
         {
             _emissionModule.enabled = true;
             
             var deltaFill = _lastFillEmission;
-            fill = Mathf.Lerp(fill, threshold, Time.deltaTime * drainSpeed * 0.5f);
-            fill = Mathf.MoveTowards(fill, threshold, Time.deltaTime * drainSpeed * 0.5f);
-            deltaFill -= fill;
+            fillAmount = Mathf.Lerp(fillAmount, threshold, Time.deltaTime * drainSpeed * 0.5f);
+            fillAmount = Mathf.MoveTowards(fillAmount, threshold, Time.deltaTime * drainSpeed * 0.5f);
+            deltaFill -= fillAmount;
             var particles = (int)(deltaFill * totalParticles);
             if (particles > 0)
             {
                 liquidParticles.Emit(particles);
-                _lastFillEmission = fill;
+                _lastFillEmission = fillAmount;
             }
         }
         else
@@ -59,17 +61,64 @@ public class Bottle : ParticleCollisionListener
 
         if (_liquidAnimator)
         {
-            _liquidAnimator.fillAmount = fill;
-            _liquidAnimator.gameObject.SetActive(fill >= 0);
+            _liquidAnimator.gameObject.SetActive(fillAmount >= 0);
         }
 
-        if (fill > _lastFillEmission) _lastFillEmission = fill;
+        if (fillAmount > _lastFillEmission) _lastFillEmission = fillAmount;
     }
     
     public override void OnHitBySubstance(List<ChemicalSubstance> chemicalSubstances)
     {
         this.chemicalSubstances.AddRange(chemicalSubstances);
         this.chemicalSubstances = this.chemicalSubstances.Distinct().ToList();
-        fill = Mathf.Clamp01(fill + 1f / totalParticles);
+        fillAmount = Mathf.Clamp01(fillAmount + 1f / totalParticles);
+        
+        var main = liquidParticles.main;
+
+        var targetColor = GetTargetColor();
+
+        color = Color.Lerp(color, targetColor, Time.deltaTime * 5.0f);
+        
+        var grad = main.startColor; 
+        grad.color = color;
+        main.startColor = grad;
+
+
+        TryReact();
+    }
+
+    public Color GetTargetColor()
+    {
+        var colorVec = Vector3.zero;
+        foreach (var chemicalSubstance in this.chemicalSubstances)
+        {
+            colorVec += new Vector3(chemicalSubstance.color.r, chemicalSubstance.color.g, chemicalSubstance.color.b);
+        }
+        colorVec /= chemicalSubstances.Count;
+        return new Color(colorVec.x,  colorVec.y, colorVec.z);
+    }
+
+    private void TryReact()
+    {
+        if (chemicalSubstances.Any(c => c.substance == ChemicalSubstance.Substance.Water) &&
+            chemicalSubstances.Any(c => c.substance == ChemicalSubstance.Substance.Sodium))
+        {
+            if (!exploding)
+            {
+                StartCoroutine(Explode());
+            }
+        }
+    }
+
+    private IEnumerator Explode()
+    {
+        exploding = true;
+        yield return new WaitForSeconds(3f);
+        var particles = Instantiate(ChemicalReactionManager.Instance.explosionParticles, transform.position, Quaternion.identity);
+        Destroy(particles, 10f);
+        fillAmount = 0;
+        _lastFillEmission = 0;
+        chemicalSubstances.Clear();
+        exploding = false;
     }
 }
