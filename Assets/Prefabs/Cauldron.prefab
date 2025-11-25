@@ -4979,7 +4979,7 @@ PrefabInstance:
     - target: {fileID: 8044683615544721777, guid: 26f702b96155f6c49997cc015ba58cb4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2100000, guid: 17cff0d379125844092828052cc29d25, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -5022,7 +5022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a763af5aa70aa604bab86fd631df7bb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  yBounds: {x: 0.02, y: 1.24}
+  yBounds: {x: 0.01, y: 1.21}
   waveBaseHeight: 0.02
   waveIntensity: 0.5
   waveScale: 5
@@ -5093,7 +5093,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  fillAmount: 0.56
+  fillAmount: 0.11
   color: {r: 0, g: 0.41451386, b: 0.7924528, a: 1}
   drainSpeed: 1
   liquidParticles: {fileID: 8452126760997097939}
