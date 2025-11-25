@@ -8,7 +8,7 @@ public class ChemicalReactionManager : MonoBehaviour
     private List<ChemicalReaction> chemicalReactions = new  List<ChemicalReaction>();
 
     public ParticleSystem explosionParticles;
-    
+    public ChemicalSubstance water;
     private void Awake()
     {
         Instance = this;

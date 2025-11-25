@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3532001735726979840}
-  - component: {fileID: 4657698103965846811}
   - component: {fileID: 7887870726910527447}
   - component: {fileID: 4355502085113484625}
   m_Layer: 0
@@ -34,19 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4657698103965846811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7738858128350040361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 506c3456b89338647865da2e8bda548d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dist: 3
 --- !u!114 &7887870726910527447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,4 +58,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2214608226dc4ac9aba18c2ec5cc5ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionParticles: {fileID: 417761080263594739, guid: 7800b8f6b712bfe49bd663eeb3ebe1e4, type: 3}
+  explosionParticles: {fileID: 5582349065591914245, guid: b2e7bf47965111a4cb2df8eac1830d9f, type: 3}
+  water: {fileID: 11400000, guid: 0fb57146681288947adcd7cd4e14330f, type: 2}

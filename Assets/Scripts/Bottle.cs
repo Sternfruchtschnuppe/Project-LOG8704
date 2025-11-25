@@ -17,7 +17,6 @@ public class Bottle : ParticleCollisionListener
     public ParticleSystem liquidParticles;
     public float totalParticles = 500;
 
-    private ParticleSystem.EmissionModule _emissionModule;
     private LiquidAnimator _liquidAnimator;
     public Collider trigger;
     
@@ -29,8 +28,9 @@ public class Bottle : ParticleCollisionListener
     {
         base.Start();
         _liquidAnimator = GetComponentInChildren<LiquidAnimator>();
-        _emissionModule = liquidParticles.emission;
-        trigger = GetComponents<Collider>().First(c => c.isTrigger);
+        if (GetComponents<Collider>().Any(c => c.isTrigger)) trigger = GetComponents<Collider>().First(c => c.isTrigger);
+        if (chemicalSubstances.Count == 0) fillAmount = 0;
+        _lastFillEmission =  fillAmount;
     }
 
     void Update()
@@ -39,9 +39,11 @@ public class Bottle : ParticleCollisionListener
         tilt = Mathf.Clamp01(Mathf.Acos(tilt) / Mathf.PI);
         
         var threshold = outflowThresholdCurve.Evaluate(tilt);
+        var emission = liquidParticles.emission;
+        emission.enabled = true;
+        
         if (fillAmount > threshold)
         {
-            _emissionModule.enabled = true;
             
             var deltaFill = _lastFillEmission;
             fillAmount = Mathf.Lerp(fillAmount, threshold, Time.deltaTime * drainSpeed * 0.5f);
@@ -56,14 +58,15 @@ public class Bottle : ParticleCollisionListener
         }
         else
         {
-            _emissionModule.enabled = false;        
+            emission.enabled = false;        
         }
-
+        
         if (_liquidAnimator)
         {
             _liquidAnimator.gameObject.SetActive(fillAmount >= 0);
         }
-
+        
+        UpdateParticleColor();
         if (fillAmount > _lastFillEmission) _lastFillEmission = fillAmount;
     }
     
@@ -73,22 +76,26 @@ public class Bottle : ParticleCollisionListener
         this.chemicalSubstances = this.chemicalSubstances.Distinct().ToList();
         fillAmount = Mathf.Clamp01(fillAmount + 1f / totalParticles);
         
-        var main = liquidParticles.main;
-
         var targetColor = GetTargetColor();
 
         color = Color.Lerp(color, targetColor, Time.deltaTime * 5.0f);
-        
+
+        // UpdateParticleColor();
+        TryReact();
+    }
+
+    private void UpdateParticleColor()
+    {
+        var main = liquidParticles.main;
         var grad = main.startColor; 
         grad.color = color;
         main.startColor = grad;
-
-
-        TryReact();
     }
 
     public Color GetTargetColor()
     {
+        if(chemicalSubstances.Count == 0) return Color.black;
+        
         var colorVec = Vector3.zero;
         foreach (var chemicalSubstance in this.chemicalSubstances)
         {
@@ -107,6 +114,14 @@ public class Bottle : ParticleCollisionListener
             {
                 StartCoroutine(Explode());
             }
+        }
+
+        if (chemicalSubstances.Any(c => c.substance == ChemicalSubstance.Substance.HydrochloricAcid) &&
+            chemicalSubstances.Any(c => c.substance == ChemicalSubstance.Substance.SodiumHydroxide))
+        {
+            chemicalSubstances = chemicalSubstances.Where(c =>
+                c.substance != ChemicalSubstance.Substance.HydrochloricAcid &&
+                c.substance != ChemicalSubstance.Substance.SodiumHydroxide).Append(ChemicalReactionManager.Instance.water).Distinct().ToList();
         }
     }
 

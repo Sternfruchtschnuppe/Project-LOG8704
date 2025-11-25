@@ -11,6 +11,8 @@ public class ChemicalSubstance : ScriptableObject
         StrontiumChloride,  // fire -> red flame
         SodiumChloride,     // fire -> bright yellow flame
         Sodium,             // water + sodium = boom
+        SodiumHydroxide,    
+        HydrochloricAcid  
     }
     
     public Substance substance;

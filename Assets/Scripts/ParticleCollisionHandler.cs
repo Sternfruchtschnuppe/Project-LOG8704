@@ -8,7 +8,7 @@ public class ParticleCollisionHandler : MonoBehaviour
     private Bottle _bottle;
     private ParticleSystem _particleSystem;
 
-    protected virtual void Start()
+    protected void Start()
     {
         _bottle = GetComponentInParent<Bottle>();
         _particleSystem = GetComponent<ParticleSystem>();
@@ -30,28 +30,6 @@ public class ParticleCollisionHandler : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
     }
-
-    // void OnParticleTrigger()
-    // {
-    //     var entered = new List<ParticleSystem.Particle>();
-    //     _particleSystem.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, entered, out var data);
-    //     
-    //     for (int i = 0; i < entered.Count; i++)
-    //     {
-    //         int colliderCount = data.GetColliderCount(i);
-    //         if (colliderCount == 0)
-    //             continue;
-    //
-    //         for (int c = 0; c < colliderCount; c++)
-    //         {
-    //             var col = data.GetCollider(i, c);
-    //             if (col && col.gameObject.TryGetComponent<ParticleCollisionListener>(out var listener))
-    //             {
-    //                 listener.OnHitBySubstance(_bottle.chemicalSubstances);
-    //             }
-    //         }
-    //     }
-    // }
     
     void OnParticleTrigger()
     {

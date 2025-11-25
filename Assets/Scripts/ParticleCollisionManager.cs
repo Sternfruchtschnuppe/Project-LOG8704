@@ -21,7 +21,10 @@ public abstract class ParticleCollisionListener : MonoBehaviour
     {
         var pcm = ParticleCollisionManager.Instance;
         if (!pcm) return;
-        pcm.particleTriggers.Add(GetComponents<Collider>().First(c => c.isTrigger));
+        if (GetComponents<Collider>().Any(c => c.isTrigger))
+        {
+            pcm.particleTriggers.Add(GetComponents<Collider>().First(c => c.isTrigger));
+        }
     }
     
     public abstract void OnHitBySubstance(List<ChemicalSubstance> chemicalSubstances);

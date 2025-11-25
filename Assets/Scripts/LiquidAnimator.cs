@@ -47,6 +47,7 @@ public class LiquidAnimator : MonoBehaviour
 
     void Update()
     {
+        if(rend.sharedMaterial == null) return;
         rend.GetPropertyBlock(block);
         if (block == null) return;
         
@@ -74,14 +75,5 @@ public class LiquidAnimator : MonoBehaviour
         block.SetColor(SideColor, _bottle.color);
         
         rend.SetPropertyBlock(block);
-    }
-    
-    void OnDrawGizmosSelected()
-    {
-        var r = GetComponent<MeshRenderer>();
-        if (r == null) return;
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(r.bounds.center, r.bounds.size);
     }
 }
