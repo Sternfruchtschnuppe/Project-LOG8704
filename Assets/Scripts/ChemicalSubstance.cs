@@ -21,4 +21,6 @@ public class ChemicalSubstance : ScriptableObject
     public float fireFeedFactor; //add or remove power of fire source (water has negative value, gas positive)
     public bool canChangeFlameColor;
     public Color flameColor;
+
+    public float phValue;
 }
