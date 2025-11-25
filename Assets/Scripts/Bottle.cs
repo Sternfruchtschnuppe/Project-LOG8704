@@ -121,4 +121,36 @@ public class Bottle : ParticleCollisionListener
         chemicalSubstances.Clear();
         exploding = false;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("PHStrip") && chemicalSubstances.Count != 0)
+        {
+            float phValue = 0f;
+            foreach (var substance in chemicalSubstances)
+            {
+                phValue += substance.phValue;
+            }
+            phValue /= chemicalSubstances.Count;
+            
+            other.gameObject.GetComponent<PHStrip>().SetTargetColor(PHToColor(phValue));
+        }
+    }
+    
+    private Color PHToColor(float ph)
+    {
+        ph = Mathf.Clamp(ph, 0f, 14f);
+        var color = new Color(1f, 1f, 1f, 1f);
+        if (ph < 7f)
+        {
+            color =  Color.Lerp(Color.red, Color.green, ph / 7f);
+        }
+        else
+        {
+            color = Color.Lerp(Color.green, Color.blue, (ph - 7f) / 7f);
+        }
+
+        return color - 0.1f * Color.white;
+    }
+
 }

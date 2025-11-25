@@ -20,6 +20,7 @@ public abstract class ParticleCollisionListener : MonoBehaviour
     public virtual void Start()
     {
         var pcm = ParticleCollisionManager.Instance;
+        if (!pcm) return;
         pcm.particleTriggers.Add(GetComponents<Collider>().First(c => c.isTrigger));
     }
     
