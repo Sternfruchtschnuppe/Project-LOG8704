@@ -1,7 +1,8 @@
+<img width="567" height="567" alt="LePtitAlchemisteLogo" src="public/LePtitAlchemisteLogo.png" />
+
+
 # **Le P’tit Alchimiste**  
 ### *From Kartoffel Magique Studio*
-
-
 
 
 
