@@ -106,10 +106,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5284307537603843308, guid: ba7bbc7447a3b8f48aec3df1beeda321, type: 3}
-      propertyPath: EmissionModule.enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5284307537603843308, guid: ba7bbc7447a3b8f48aec3df1beeda321, type: 3}
       propertyPath: TriggerModule.colliderQueryMode
       value: 1
       objectReference: {fileID: 0}
@@ -308,7 +304,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   fillAmount: 0.6
   color: {r: 0, g: 0, b: 0, a: 1}
-  drainSpeed: 0.3
+  drainSpeed: 0.5
   liquidParticles: {fileID: 8537087635963809210}
   totalParticles: 800
   trigger: {fileID: 5824611519424211206}

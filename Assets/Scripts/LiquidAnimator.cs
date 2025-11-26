@@ -52,7 +52,8 @@ public class LiquidAnimator : MonoBehaviour
         if (block == null) return;
         
         block.SetFloat(FillAmount, _bottle.fillAmount);
-        block.SetVector(FillAmountRemap, new Vector2(yBounds.x, yBounds.y));
+        var bollteEmptyAddValue = _bottle.fillAmount == 0f ? -100f : 0f;
+        block.SetVector(FillAmountRemap, new Vector2(yBounds.x + bollteEmptyAddValue, yBounds.y + bollteEmptyAddValue));
 
         Vector3 pos = transform.position;
         velocity = (pos - lastPos) / Mathf.Max(Time.deltaTime, 1e-5f);

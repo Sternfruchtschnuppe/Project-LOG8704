@@ -38,7 +38,7 @@ public class Bottle : ParticleCollisionListener
         var tilt = Vector3.Dot(transform.up, Vector3.up);
         tilt = Mathf.Clamp01(Mathf.Acos(tilt) / Mathf.PI);
         
-        var threshold = outflowThresholdCurve.Evaluate(tilt);
+        var threshold = Mathf.Clamp01(outflowThresholdCurve.Evaluate(tilt));
         var emission = liquidParticles.emission;
         emission.enabled = true;
         
@@ -80,7 +80,6 @@ public class Bottle : ParticleCollisionListener
 
         color = Color.Lerp(color, targetColor, Time.deltaTime * 5.0f);
 
-        // UpdateParticleColor();
         TryReact();
     }
 
