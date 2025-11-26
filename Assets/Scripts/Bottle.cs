@@ -147,24 +147,8 @@ public class Bottle : ParticleCollisionListener
             }
             phValue /= chemicalSubstances.Count;
             
-            other.gameObject.GetComponent<PHStrip>().SetTargetColor(PHToColor(phValue));
+            other.gameObject.GetComponent<PHStrip>().SetTargetColor(PhColor.Get(phValue));
         }
     }
-    
-    private Color PHToColor(float ph)
-    {
-        ph = Mathf.Clamp(ph, 0f, 14f);
-        var color = new Color(1f, 1f, 1f, 1f);
-        if (ph < 7f)
-        {
-            color =  Color.Lerp(Color.red, Color.green, ph / 7f);
-        }
-        else
-        {
-            color = Color.Lerp(Color.green, Color.blue, (ph - 7f) / 7f);
-        }
-
-        return color - 0.1f * Color.white;
-    }
-
 }
+

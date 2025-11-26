@@ -64,7 +64,10 @@ public class Fire : ParticleCollisionListener
 
     public void OnTriggerEnter(Collider other)
     {
-        //todo burn other
+        if (other.TryGetComponent<Fire>(out var fire))
+        {
+            fire.SetHealth(fire.maxHealth);
+        }
         
         // Flame Coloring
         if (other.TryGetComponent<SolidMaterial>(out var solidMaterial))
@@ -85,8 +88,6 @@ public class Fire : ParticleCollisionListener
     public void SetHealth(float health)
     {
         this.health = Mathf.Clamp(health, 0f, maxHealth);
-        
-        //todo set intensity of lights / transparency etc
         
         fireGFX.SetActive(health > 0);
     }

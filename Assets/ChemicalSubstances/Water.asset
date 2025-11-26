@@ -18,4 +18,4 @@ MonoBehaviour:
   fireFeedFactor: -1
   canChangeFlameColor: 0
   flameColor: {r: 0, g: 0, b: 0, a: 0}
-  phValue: 10
+  phValue: 7

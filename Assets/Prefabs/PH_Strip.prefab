@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 2245696688132019131}
   - component: {fileID: 4303768662139403466}
   - component: {fileID: 1816631349132259273}
+  - component: {fileID: 2970793700702938449}
   m_Layer: 0
   m_Name: PH_Strip
   m_TagString: PHStrip
@@ -142,7 +143,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.11870852, y: 0.9848522, z: 0.06557274}
+  m_Size: {x: 0.11870852, y: 0.9848522, z: 0.04}
   m_Center: {x: 0.0030626506, y: 0.21372825, z: 0.0012435913}
 --- !u!114 &787590251361303178
 MonoBehaviour:
@@ -228,3 +229,24 @@ MonoBehaviour:
   _releaseDistance: 0
   _resetGrabOnGrabsUpdated: 1
   _physicsGrabbable: {fileID: 0}
+--- !u!65 &2970793700702938449
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129430007057928809}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.14484054, y: 1.0830342, z: 0.039680876}
+  m_Center: {x: 0.009842123, y: 0.23486006, z: -0.004840274}
